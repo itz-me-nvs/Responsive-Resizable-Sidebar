@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notebook Sidebar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./sidebar.css" />
+    <script src="./sidebar.js" defer></script>
+    <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="d-flex" style="padding: 5px 25px">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            id="menu-btn"
+            class="self-center cursor-pointer"
+          >
+            <mask
+              id="mask0_39_8"
+              style="mask-type: alpha"
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="24"
+              height="24"
+            >
+              <rect width="24" height="24" fill="#D9D9D9" />
+            </mask>
+            <g mask="url(#mask0_39_8)">
+              <path
+                d="M4 18.225C3.68333 18.225 3.41267 18.1167 3.188 17.9C2.96267 17.6833 2.85 17.4167 2.85 17.1C2.85 16.7667 2.96267 16.4917 3.188 16.275C3.41267 16.0583 3.68333 15.95 4 15.95H20C20.3167 15.95 20.5873 16.0583 20.812 16.275C21.0373 16.4917 21.15 16.7667 21.15 17.1C21.15 17.4167 21.0373 17.6833 20.812 17.9C20.5873 18.1167 20.3167 18.225 20 18.225H4ZM4 13.15C3.68333 13.15 3.41267 13.0373 3.188 12.812C2.96267 12.5873 2.85 12.3167 2.85 12C2.85 11.6833 2.96267 11.4127 3.188 11.188C3.41267 10.9627 3.68333 10.85 4 10.85H20C20.3167 10.85 20.5873 10.9627 20.812 11.188C21.0373 11.4127 21.15 11.6833 21.15 12C21.15 12.3167 21.0373 12.5873 20.812 12.812C20.5873 13.0373 20.3167 13.15 20 13.15H4ZM4 8.04999C3.68333 8.04999 3.41267 7.94166 3.188 7.72499C2.96267 7.50833 2.85 7.23333 2.85 6.89999C2.85 6.58333 2.96267 6.31666 3.188 6.09999C3.41267 5.88333 3.68333 5.77499 4 5.77499H20C20.3167 5.77499 20.5873 5.88333 20.812 6.09999C21.0373 6.31666 21.15 6.58333 21.15 6.89999C21.15 7.23333 21.0373 7.50833 20.812 7.72499C20.5873 7.94166 20.3167 8.04999 20 8.04999H4Z"
+                fill="#1C1B1F"
+              />
+            </g>
+          </svg>
+
+          <h2 class="header-title">
+            Alrayyan Institution of Technology and Research
+          </h2>
+        </div>
+      </div>
+      <div class="d-flex">
+        <div class="sidebar" data-closed="true">
+          <div class="list"></div>
+        </div>
+        <div class="resizer" id="dragMe"></div>
+        <div class="main">Main Page</div>
+      </div>
+    </div>
+  </body>
+</html>
