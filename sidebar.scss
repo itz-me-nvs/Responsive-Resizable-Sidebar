@@ -64,6 +64,9 @@
 
   --sidebar-primary-color: #1a73e8;
   --sidebar-secondary-color: #3c4043;
+  --SIDEBAR_WIDTH: 65px;
+  --HEADER_HEIGHT: 61px;
+  --MAIN_CONTENT_MARGIN: 65px;
 }
 
 body {
@@ -80,8 +83,7 @@ body {
   // overflow-y: hidden;
   height: 100%;
   .header {
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 1;
     background-color: var(--BUTTON_PRIMARY_TEXT);
@@ -100,15 +102,15 @@ body {
   }
   .sidebar {
     position: fixed;
-    top: 61px;
+    top: var(--HEADER_HEIGHT);
     left: 0;
     z-index: 1;
     height: 100%;
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     background-color: var(--BUTTON_PRIMARY_TEXT);
-    border-right: 1px solid var(--COMMON_BORDER_COLOR);
-    width: 65px;
-    overflow-y: auto;
+    // border-right: 1px solid var(--COMMON_BORDER_COLOR);
+    width: var(--SIDEBAR_WIDTH);
+    // overflow-y: auto;
     &[data-closed="true"] {
       .list {
         .list-item-container {
@@ -139,7 +141,7 @@ body {
       .list {
         .list-item-container {
           .list-item {
-            width: inherit;
+            width: calc(var(--SIDEBAR_WIDTH) - 16);
             padding: 8px 12px 8px 24px;
             border-radius: 0 24px 24px 0;
             margin: 0 16px 0 0;
@@ -300,18 +302,23 @@ body {
     }
   }
   .main {
-    width: 100%;
     background-color: var(--BACKGROUND-SECONDARY-SHADE);
     padding: 10px;
     font-size: 35px;
     text-align: center;
     min-height: 100vh;
+    width: calc(100% - var(--MAIN_CONTENT_MARGIN));
+    margin: var(--HEADER_HEIGHT) auto auto var(--MAIN_CONTENT_MARGIN) !important;
+    padding: 5px !important;
+    overflow-x: hidden;
     svg {
       cursor: pointer;
       margin: 10px 8px;
     }
   }
 }
+
+/* Custom Styles */
 
 .d-flex {
   display: flex;
@@ -322,13 +329,19 @@ body {
 .cursor-pointer {
   cursor: pointer;
 }
+.align-items-center {
+  align-items: center;
+}
 
 .resizer {
   background-color: transparent;
   cursor: ew-resize;
-  height: 100%;
+  height: calc(100% - var(--HEADER_HEIGHT));
+  top: var(--HEADER_HEIGHT);
   width: 2px;
   position: fixed;
   z-index: 1;
   left: 65px;
+  transition: none;
 }
+

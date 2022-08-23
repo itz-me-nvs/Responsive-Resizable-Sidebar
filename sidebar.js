@@ -5,6 +5,7 @@ let sidebar = document.querySelector(".sidebar");
 let list = document.querySelector(".list");
 let listItem = document.querySelector(".list-item");
 let listItemTitle = document.querySelector(".list-item-title");
+let mainPage = document.querySelector(".main");
 
 const sidebarList = [
   {
@@ -147,6 +148,7 @@ GetPreviousSubmenuOpen = () => {
 const SIDEBAR_CLOSE_OFFSET = 50;
 const SIDEBAR_INITIAL_WIDTH = 65;
 const SIDEBAR_MAX_WIDTH = 230;
+const SIDEBAR_HOVER_DELAY = 500;
 console.log(sidebarList);
 
 menuButton.addEventListener("click", function (e) {
@@ -154,14 +156,23 @@ menuButton.addEventListener("click", function (e) {
 
   if (sidebar.dataset.closed === "true") {
     sidebar.dataset.closed = "false";
-    sidebar.style.width = `${SIDEBAR_MAX_WIDTH}px`;
+    sidebar.classList.add("pinned");
+
+    changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_MAX_WIDTH}px`);
+    sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+    changeRootVariable("--MAIN_CONTENT_MARGIN", `${SIDEBAR_MAX_WIDTH}px`);
     resizer.style.left = `${SIDEBAR_MAX_WIDTH}px`;
+    resizer.style.zIndex = `1`;
 
     GetPreviousSubmenuOpen();
   } else {
     sidebar.dataset.closed = "true";
-    sidebar.style.width = `${SIDEBAR_INITIAL_WIDTH}px`;
+    sidebar.classList.remove("pinned");
     resizer.style.left = `${SIDEBAR_INITIAL_WIDTH}px`;
+    resizer.style.zIndex = `-1`;
+    changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
+    sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+    changeRootVariable("--MAIN_CONTENT_MARGIN", `${SIDEBAR_INITIAL_WIDTH}px`);
 
     list.childNodes.forEach(function (item, index) {
       item.lastElementChild.style.maxHeight = "0px";
@@ -170,6 +181,37 @@ menuButton.addEventListener("click", function (e) {
 });
 
 window.addEventListener("load", function (e) {
+  let mouseDelayID = null;
+  sidebar.addEventListener("mouseover", () => {
+    if (!sidebar.classList.contains("pinned")) {
+      mouseDelayID = this.setTimeout(() => {
+        changeRootVariable(
+          "--MAIN_CONTENT_MARGIN",
+          `${SIDEBAR_INITIAL_WIDTH}px`
+        );
+        mainPage.style.width = `calc(100% - ${document
+          .querySelector(":root")
+          .style.getPropertyValue("--MAIN_CONTENT_MARGIN")})`;
+        mainPage.style.margin = `var(--HEADER_HEIGHT) auto auto ${document
+          .querySelector(":root")
+          .style.getPropertyValue("--MAIN_CONTENT_MARGIN")} !important`;
+        sidebar.dataset.closed = "false";
+        changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_MAX_WIDTH}px`);
+        sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+      }, SIDEBAR_HOVER_DELAY);
+    }
+  });
+
+  sidebar.addEventListener("mouseout", () => {
+    if (!sidebar.classList.contains("pinned")) {
+      sidebar.dataset.closed = "true";
+      changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
+      sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+      this.clearTimeout(mouseDelayID);
+      mouseDelayID = null;
+    }
+  });
+
   sidebarList.forEach((item, index) => {
     let listItemContainer = document.createElement("div");
     let subItemContainer = document.createElement("div");
@@ -250,6 +292,7 @@ window.addEventListener("load", function (e) {
       subItem.appendChild(subItemTitle);
       subItemContainer.appendChild(subItem);
 
+      // submenu click event
       subItem.onclick = function (e) {
         let selectedElementIndex = e.target.dataset.subMenuIndex;
         console.log(
@@ -298,7 +341,6 @@ let leftWidth = 0;
 // Handle the mousedown event
 // that's triggered when user drags the resizer
 const mouseDownHandler = function (e) {
-  console.log("mousedown", e);
   // Get the current mouse position
   x = e.clientX;
   y = e.clientY;
@@ -314,8 +356,6 @@ const mouseDownHandler = function (e) {
 resizer.addEventListener("mousedown", mouseDownHandler);
 
 const mouseMoveHandler = function (e) {
-  console.log("mousemove", e);
-
   document.body.style.cursor = "col-resize";
 
   leftSide.style.userSelect = "none";
@@ -328,17 +368,19 @@ const mouseMoveHandler = function (e) {
   const dx = e.clientX - x;
   const dy = e.clientY - y;
 
-  console.log(e.pageX);
-  const newLeftWidth =
-    ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
-  if (newLeftWidth < 50) {
+  //  sidebar width based on window innerwidth / resizer.parentNode.getBoundingClientRect().width
+  const newLeftWidth = leftWidth + dx;
+  const newLeftWidthInPercentage = (newLeftWidth / window.innerWidth) * 100;
+  if (newLeftWidthInPercentage < 50) {
     if (
       e.clientX < SIDEBAR_INITIAL_WIDTH + SIDEBAR_CLOSE_OFFSET &&
       previousClient > e.pageX
     ) {
       sidebar.dataset.closed = "true";
-      leftSide.style.width = `65px`;
-      resizer.style.left = `65px`;
+      changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
+      changeRootVariable("--MAIN_CONTENT_MARGIN", `${SIDEBAR_INITIAL_WIDTH}px`);
+      sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+      resizer.style.left = getRootVariableValue("--SIDEBAR_WIDTH");
 
       list.childNodes.forEach(function (item, index) {
         item.lastElementChild.style.maxHeight = "0px";
@@ -347,8 +389,9 @@ const mouseMoveHandler = function (e) {
     } else {
       GetPreviousSubmenuOpen();
     }
-    leftSide.style.width = `${newLeftWidth}%`;
-    resizer.style.left = `${newLeftWidth}%`;
+    leftSide.style.width = `${newLeftWidthInPercentage}%`;
+    resizer.style.left = `${newLeftWidthInPercentage}%`;
+    changeRootVariable("--MAIN_CONTENT_MARGIN", `${newLeftWidth}px`);
     sidebar.style.transition = "none";
     sidebar.dataset.closed = "false";
   }
@@ -369,4 +412,13 @@ const mouseUpHandler = function () {
   // Remove the handlers of `mousemove` and `mouseup`
   document.removeEventListener("mousemove", mouseMoveHandler);
   document.removeEventListener("mouseup", mouseUpHandler);
+};
+
+// Helper Function
+const changeRootVariable = (key, value) => {
+  document.querySelector(":root").style.setProperty(key, value);
+};
+
+const getRootVariableValue = (key) => {
+  return document.querySelector(":root").style.getPropertyValue(key);
 };
