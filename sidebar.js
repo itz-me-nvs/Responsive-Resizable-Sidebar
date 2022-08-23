@@ -202,6 +202,7 @@ window.addEventListener("load", function (e) {
     }
   });
 
+  // Mouse over with pinned state
   sidebar.addEventListener("mouseout", () => {
     if (!sidebar.classList.contains("pinned")) {
       sidebar.dataset.closed = "true";
