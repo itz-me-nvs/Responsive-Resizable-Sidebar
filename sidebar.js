@@ -149,6 +149,9 @@ const SIDEBAR_CLOSE_OFFSET = 50;
 const SIDEBAR_INITIAL_WIDTH = 65;
 const SIDEBAR_MAX_WIDTH = 230;
 const SIDEBAR_HOVER_DELAY = 500;
+const THEME_KEY = "theme";
+const LIGHT_MODE = "light";
+const DARK_MODE = "dark";
 console.log(sidebarList);
 
 menuButton.addEventListener("click", function (e) {
@@ -181,6 +184,13 @@ menuButton.addEventListener("click", function (e) {
 });
 
 window.addEventListener("load", function (e) {
+  if (window.localStorage.getItem(THEME_KEY)) {
+    DarkModeSupport();
+  } else {
+    window.localStorage.setItem(THEME_KEY, LIGHT_MODE);
+    document.body.classList.add(LIGHT_MODE);
+  }
+
   let mouseDelayID = null;
   sidebar.addEventListener("mouseover", () => {
     if (!sidebar.classList.contains("pinned")) {
@@ -205,11 +215,11 @@ window.addEventListener("load", function (e) {
   // Mouse over with pinned state
   sidebar.addEventListener("mouseout", () => {
     if (!sidebar.classList.contains("pinned")) {
-      sidebar.dataset.closed = "true";
-      changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
-      sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
       this.clearTimeout(mouseDelayID);
       mouseDelayID = null;
+      changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
+      sidebar.dataset.closed = "true";
+      sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
     }
   });
 
@@ -324,8 +334,6 @@ window.addEventListener("load", function (e) {
 });
 
 // resize sidebar
-
-// Query the element
 const resizer = document.getElementById("dragMe");
 console.log(resizer);
 const leftSide = resizer.previousElementSibling;
@@ -423,3 +431,48 @@ const changeRootVariable = (key, value) => {
 const getRootVariableValue = (key) => {
   return document.querySelector(":root").style.getPropertyValue(key);
 };
+
+const setLocalStorage = (key, value) => {
+  localStorage.setItem(key, value);
+};
+
+const getLocalStorageValue = (key) => {
+  localStorage.getItem(key);
+};
+
+const deleteFromLocalstorage = (key) => {
+  localStorage.removeItem(key);
+};
+
+// Dark Mode Handler
+
+const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+console.log(darkModeMediaQuery.matches);
+darkModeMediaQuery.addEventListener("change", (e) => {
+  document.body.classList.add(LIGHT_MODE);
+  document.body.classList.remove(DARK_MODE);
+  deleteFromLocalstorage(THEME_KEY);
+});
+
+const DarkModeSupport = () => {
+  if (window.matchMedia("(prefers-color-scheme)").media === "not all") {
+    console.log("Dark Mode is not supported");
+  } else {
+    document.body.classList.add(
+      localStorage.getItem(THEME_KEY) === DARK_MODE ? DARK_MODE : LIGHT_MODE
+    );
+  }
+};
+
+document.querySelector(".dark-mode").addEventListener("click", () => {
+  if (document.body.classList.contains(LIGHT_MODE)) {
+    document.body.classList.remove(LIGHT_MODE);
+    document.body.classList.add(DARK_MODE);
+  } else {
+    document.body.classList.remove(DARK_MODE);
+    document.body.classList.add(LIGHT_MODE);
+  }
+
+  console.log(document.body.classList[0]);
+  setLocalStorage(THEME_KEY, document.body.classList[0]);
+});
