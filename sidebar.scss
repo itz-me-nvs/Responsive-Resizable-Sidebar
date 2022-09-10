@@ -103,12 +103,11 @@ body {
     align-items: center;
     border-bottom: 1px solid var(--COMMON_BORDER_COLOR);
     .header-title {
-      font-size: 1.2rem;
+      font-size: 1.6rem;
       font-weight: bold;
       color: var(--COLOR-DARKEST-PRIMARY);
       padding-left: 22px;
     }
-
   }
   .sidebar {
     position: fixed;
@@ -118,9 +117,8 @@ body {
     height: 100%;
     transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     background-color: var(--BUTTON_PRIMARY_TEXT);
-    // border-right: 1px solid var(--COMMON_BORDER_COLOR);
     width: var(--SIDEBAR_WIDTH);
-    // overflow-y: auto;
+    overflow-y: auto;
     &[data-closed="true"] {
       .list {
         .list-item-container {
@@ -298,11 +296,11 @@ body {
               font-weight: 500;
               padding-left: 19px;
               opacity: 0;
-              pointer-events: none;
               text-overflow: ellipsis;
               white-space: nowrap;
               overflow: hidden;
               transition: opacity 0.2s ease;
+              pointer-events: none;
 
               // max-height: 3em;
             }
@@ -312,7 +310,7 @@ body {
     }
   }
   .main {
-    background-color:inherit;
+    background-color: inherit;
     padding: 10px;
     font-size: 35px;
     text-align: center;

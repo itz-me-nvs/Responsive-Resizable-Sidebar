@@ -152,11 +152,8 @@ const SIDEBAR_HOVER_DELAY = 500;
 const THEME_KEY = "theme";
 const LIGHT_MODE = "light";
 const DARK_MODE = "dark";
-console.log(sidebarList);
 
 menuButton.addEventListener("click", function (e) {
-  console.log("clicked", e, sidebar, menuButton, list.children);
-
   if (sidebar.dataset.closed === "true") {
     sidebar.dataset.closed = "false";
     sidebar.classList.add("pinned");
@@ -213,13 +210,18 @@ window.addEventListener("load", function (e) {
   });
 
   // Mouse over with pinned state
-  sidebar.addEventListener("mouseout", () => {
+  sidebar.addEventListener("mouseout", (e) => {
     if (!sidebar.classList.contains("pinned")) {
       this.clearTimeout(mouseDelayID);
       mouseDelayID = null;
       changeRootVariable("--SIDEBAR_WIDTH", `${SIDEBAR_INITIAL_WIDTH}px`);
-      sidebar.dataset.closed = "true";
-      sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+      if (e.clientX >= sidebar.clientWidth) {
+        sidebar.dataset.closed = "true";
+        sidebar.style.width = getRootVariableValue("--SIDEBAR_WIDTH");
+        list.childNodes.forEach(function (item, index) {
+          item.lastElementChild.style.maxHeight = "0px";
+        });
+      }
     }
   });
 
@@ -250,11 +252,9 @@ window.addEventListener("load", function (e) {
     `;
 
     listItem.onclick = function (e) {
-      console.log(e.target);
       // Active item Handler
       if (e.target.classList.value != "list-item active") {
         list.childNodes.forEach(function (item, index) {
-          // console.log(item.children[0]);
           index != Number(e.target.dataset.index)
             ? (item.children[0].classList.remove("active"),
               (item.children[0].children[0].style.cssText =
@@ -293,7 +293,6 @@ window.addEventListener("load", function (e) {
       "Bachelor Admission",
       "Master Admission",
     ].entries()) {
-      console.log(index);
       let subItem = document.createElement("a");
       subItem.classList.add("d-flex", "sub-item", index == 0 ? "active" : null);
       subItem.dataset.subMenuIndex = index.toString();
@@ -306,11 +305,7 @@ window.addEventListener("load", function (e) {
       // submenu click event
       subItem.onclick = function (e) {
         let selectedElementIndex = e.target.dataset.subMenuIndex;
-        console.log(
-          selectedElementIndex,
-          e.target.parentNode.children[1].dataset.subMenuIndex,
-          e.target.parentNode.children.length
-        );
+
         e.target.classList.add("active");
         for (let i = 0; i < e.target.parentNode.children.length; i++) {
           if (
@@ -335,7 +330,6 @@ window.addEventListener("load", function (e) {
 
 // resize sidebar
 const resizer = document.getElementById("dragMe");
-console.log(resizer);
 const leftSide = resizer.previousElementSibling;
 const rightSide = resizer.nextElementSibling;
 var previousClient = 0;
@@ -354,7 +348,6 @@ const mouseDownHandler = function (e) {
   x = e.clientX;
   y = e.clientY;
   leftWidth = leftSide.getBoundingClientRect().width;
-  console.log(leftWidth);
 
   // Attach the listeners to `document`
   document.addEventListener("mousemove", mouseMoveHandler);
@@ -447,7 +440,6 @@ const deleteFromLocalstorage = (key) => {
 // Dark Mode Handler
 
 const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-console.log(darkModeMediaQuery.matches);
 darkModeMediaQuery.addEventListener("change", (e) => {
   document.body.classList.add(LIGHT_MODE);
   document.body.classList.remove(DARK_MODE);
@@ -473,6 +465,5 @@ document.querySelector(".dark-mode").addEventListener("click", () => {
     document.body.classList.add(LIGHT_MODE);
   }
 
-  console.log(document.body.classList[0]);
   setLocalStorage(THEME_KEY, document.body.classList[0]);
 });
