@@ -6,9 +6,9 @@ Hello folks, If you are searching for Responsive sidebar for your next project, 
 ## Features
 
 - Responsive (web & mobile mode).
-- Light/dark mode toggle.
-- Material Designed Sidebar.
-- Hoverable & Resizable && Toggle.
+- Light/dark mode toggle.✅
+- Material Designed Sidebar.✅
+- Hoverable & Resizable && Toggle.✅
 - Animated icons.✨
 
 
