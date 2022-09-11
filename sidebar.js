@@ -1,6 +1,7 @@
 // Variables
 
 let menuButton = document.querySelector("#menu-btn");
+let togglerButton = document.querySelector("#toggler-btn");
 let sidebar = document.querySelector(".sidebar");
 let list = document.querySelector(".list");
 let listItem = document.querySelector(".list-item");
@@ -181,7 +182,7 @@ menuButton.addEventListener("click", function (e) {
 });
 
 window.addEventListener("load", function (e) {
-  if (window.localStorage.getItem(THEME_KEY)) {
+  if (getLocalStorageValue(THEME_KEY)) {
     DarkModeSupport();
   } else {
     window.localStorage.setItem(THEME_KEY, LIGHT_MODE);
@@ -451,7 +452,7 @@ const DarkModeSupport = () => {
     console.log("Dark Mode is not supported");
   } else {
     document.body.classList.add(
-      localStorage.getItem(THEME_KEY) === DARK_MODE ? DARK_MODE : LIGHT_MODE
+      localStorage.getItem(THEME_KEY) === DARK_MODE ? (DARK_MODE, menuButton.dataset.dark = "false") : LIGHT_MODE
     );
   }
 };
@@ -460,9 +461,13 @@ document.querySelector(".dark-mode").addEventListener("click", () => {
   if (document.body.classList.contains(LIGHT_MODE)) {
     document.body.classList.remove(LIGHT_MODE);
     document.body.classList.add(DARK_MODE);
+    menuButton.dataset.dark = "true";
+    togglerButton.dataset.dark = "true";
   } else {
     document.body.classList.remove(DARK_MODE);
     document.body.classList.add(LIGHT_MODE);
+    menuButton.dataset.dark = "false";
+    togglerButton.dataset.dark = "false";
   }
 
   setLocalStorage(THEME_KEY, document.body.classList[0]);
